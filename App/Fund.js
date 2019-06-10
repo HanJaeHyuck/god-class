@@ -14,7 +14,9 @@ export default class Fund {
         this.ctx = this.canvas.getContext("2d");
         this.percent = data.percent;
 
+        // this.animateDraw();
         // this.draw(this.percent);
+        this.isDrawed = false;
     }
 
     makeTemplate(data) {
@@ -29,6 +31,19 @@ export default class Fund {
                 </div>`;
     }
 
+    animateDraw() {
+        this.isDrawed = true;
+        let current = 0;
+        let intId = setInterval(() => {
+            current++;
+            if (current >= this.percent) {
+                current = this.percent;
+                clearInterval(intId);
+            }
+            this.draw(current);
+        }, 1000 / 30);
+    }
+
     draw(p) {
         const c = this.ctx;
         c.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -40,12 +55,17 @@ export default class Fund {
         c.arc(x, y, r, 0, 2 * PI);
         c.fill();
 
-        c.fillStyle = "rgb(101, 171, 243)";
-        // 100 : 2 * PI = p : x
-        c.beginPath();
-        c.moveTo(x, y);
-        c.arc(x, y, r, -PI / 2, - PI / 2 + 2 * PI * p / 100);
-        c.fill();
+        if (this.isDrawed == true) {
+            c.fillStyle = "rgb(101, 171, 243)";
+            // 100 : 2 * PI = p : x
+            c.beginPath();
+            c.moveTo(x, y);
+            c.arc(x, y, r, -PI / 2, - PI / 2 + 2 * PI * p / 100);
+            c.fill();
+
+
+        }
+
 
         c.fillStyle = "#fff";
         c.beginPath();
@@ -57,6 +77,8 @@ export default class Fund {
         c.textBaseline = "middle";
         c.textAlign = "center";
         c.fillText(p + "%", x, y);
+
+
     }
 
     resize() {
